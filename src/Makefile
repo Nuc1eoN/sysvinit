@@ -79,6 +79,7 @@ endif
 INSTALL_DIR	= install -m 755 -d
 
 ROOT         ?=
+DESTDIR      ?= $(ROOT)
 base_bindir  ?= /bin
 base_sbindir ?= /sbin
 bindir       ?= /usr/bin
@@ -198,45 +199,45 @@ clobber:	cleanobjs
 distclean:	clobber
 
 install:	all
-		$(INSTALL_DIR) $(ROOT)$(base_bindir)/ $(ROOT)$(base_sbindir)/
-		$(INSTALL_DIR) $(ROOT)$(bindir)/
+		$(INSTALL_DIR) $(DESTDIR)$(base_bindir)/ $(DESTDIR)$(base_sbindir)/
+		$(INSTALL_DIR) $(DESTDIR)$(bindir)/
 		for i in $(BIN); do \
-			$(INSTALL_EXEC) $$i $(ROOT)$(base_bindir)/ ; \
+			$(INSTALL_EXEC) $$i $(DESTDIR)$(base_bindir)/ ; \
 		done
 		for i in $(SBIN); do \
-			$(INSTALL_EXEC) $$i $(ROOT)$(base_sbindir)/ ; \
+			$(INSTALL_EXEC) $$i $(DESTDIR)$(base_sbindir)/ ; \
 		done
 		for i in $(USRBIN); do \
-			$(INSTALL_EXEC) $$i $(ROOT)$(bindir)/ ; \
+			$(INSTALL_EXEC) $$i $(DESTDIR)$(bindir)/ ; \
 		done
-		# $(INSTALL_DIR) $(ROOT)/etc/
-		$(INSTALL_DIR) $(ROOT)/etc/inittab.d
-		# $(INSTALL_EXEC) ../doc/initscript.sample $(ROOT)/etc/
-		ln -sf halt $(ROOT)$(base_sbindir)/reboot
-		ln -sf halt $(ROOT)$(base_sbindir)/poweroff
-		ln -sf init $(ROOT)$(base_sbindir)/telinit
-		ln -sf $(base_sbindir)/killall5 $(ROOT)$(base_bindir)/pidof
-		if [ ! -f $(ROOT)$(bindir)/lastb ]; then \
-			ln -sf last $(ROOT)$(bindir)/lastb; \
+		# $(INSTALL_DIR) $(ROOT)/$(sysconfdir)/
+		$(INSTALL_DIR) $(ROOT)/$(sysconfdir)/inittab.d
+		# $(INSTALL_EXEC) ../doc/initscript.sample $(ROOT)/$(sysconfdir)/
+		ln -sf halt $(DESTDIR)$(base_sbindir)/reboot
+		ln -sf halt $(DESTDIR)$(base_sbindir)/poweroff
+		ln -sf init $(DESTDIR)$(base_sbindir)/telinit
+		ln -sf $(base_sbindir)/killall5 $(DESTDIR)$(base_bindir)/pidof
+		if [ ! -f $(DESTDIR)$(bindir)/lastb ]; then \
+			ln -sf last $(DESTDIR)$(bindir)/lastb; \
 		fi
-		$(INSTALL_DIR) $(ROOT)$(includedir)/
-		$(INSTALL_DATA) initreq.h $(ROOT)$(includedir)/
+		$(INSTALL_DIR) $(DESTDIR)$(includedir)/
+		$(INSTALL_DATA) initreq.h $(DESTDIR)$(includedir)/
 		for lang in  '' $(patsubst ../man/po/%.po,%,$(wildcard ../man/po/??.po)); do \
-			$(INSTALL_DIR) $(ROOT)$(mandir)/man1/$$lang; \
-			$(INSTALL_DIR) $(ROOT)$(mandir)/man5/$$lang; \
-			$(INSTALL_DIR) $(ROOT)$(mandir)/man8/$$lang; \
+			$(INSTALL_DIR) $(DESTDIR)$(mandir)/man1/$$lang; \
+			$(INSTALL_DIR) $(DESTDIR)$(mandir)/man5/$$lang; \
+			$(INSTALL_DIR) $(DESTDIR)$(mandir)/man8/$$lang; \
 		done
 		for man in $(MAN1) $(subst ../man/,,$(foreach man,$(MAN1),$(wildcard ../man/??/$(man)))); do \
-			$(INSTALL_DATA) ../man/$$man $(ROOT)$(mandir)/man1/$$man; \
-			sed -i "1{ $(MANDB); }" $(ROOT)$(mandir)/man1/$$man ; \
+			$(INSTALL_DATA) ../man/$$man $(DESTDIR)$(mandir)/man1/$$man; \
+			sed -i "1{ $(MANDB); }" $(DESTDIR)$(mandir)/man1/$$man ; \
 		done
 		for man in $(MAN5) $(subst ../man/,,$(foreach man,$(MAN5),$(wildcard ../man/??/$(man)))); do \
-			$(INSTALL_DATA) ../man/$$man $(ROOT)$(mandir)/man5/$$man; \
-			sed -i "1{ $(MANDB); }" $(ROOT)$(mandir)/man5/$$man ; \
+			$(INSTALL_DATA) ../man/$$man $(DESTDIR)$(mandir)/man5/$$man; \
+			sed -i "1{ $(MANDB); }" $(DESTDIR)$(mandir)/man5/$$man ; \
 		done
 		for man in $(MAN8) $(subst ../man/,,$(foreach man,$(MAN8),$(wildcard ../man/??/$(man)))); do \
-			$(INSTALL_DATA) ../man/$$man $(ROOT)$(mandir)/man8/$$man; \
-			sed -i "1{ $(MANDB); }" $(ROOT)$(mandir)/man8/$$man ; \
+			$(INSTALL_DATA) ../man/$$man $(DESTDIR)$(mandir)/man8/$$man; \
+			sed -i "1{ $(MANDB); }" $(DESTDIR)$(mandir)/man8/$$man ; \
 		done
 ifeq ($(ROOT),)
 		#
